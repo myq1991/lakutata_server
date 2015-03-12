@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="FONT/Clemente/stylesheet.css">
+    <title>Tags</title>
+</head>
+<script>
+    var tags=null;
+</script>
+<body>
+<div id="content">
+
+</div>
+</body>
+<style>
+    body{
+        margin: 0;
+        text-align: center;
+    }
+    #content{
+        margin-top: 10px;
+        display: inline-block;
+        background-color: #FFFFFF;
+        width: 880px;
+        padding: 10px;
+        box-shadow: 0 0 1px 1px #CCCCCC;
+        text-align: center;
+    }
+
+    .tag{
+        padding: 15px;
+        display: inline-block;
+        border-radius: 5px;
+        text-align: center;
+        margin: 5px;
+        color: #FFFFFF;
+        text-shadow: 0 0 1px 1px #DDDDDD;
+        cursor: pointer;
+        transition: ease 0.1s;
+        font-family: clementepdaelight;
+        font-size: 20px;
+    }
+    .tag:hover{
+        padding: 17px;
+        margin: 3px;
+    }
+</style>
+</html>
+<script>
+    var content=document.getElementById('content');
+    parent.SOCKET.emit('GETTAGS',{collectionName:'rooms'});
+    parent.SOCKET.on('GETTAGS',function(data){
+        parent.SOCKET.removeListener('GETTAGS');
+        if(data!=null){
+            for(var i=0;i<data.length;i++){
+                addTag(data[i]);
+            }
+        }
+    });
+
+    function addTag(tagName){
+        var tag=document.createElement('DIV');
+        tag.setAttribute('class','tag');
+        tag.innerHTML=tagName;
+        tag.style.backgroundColor=randomColor();
+        tag.onclick=function(){
+            var data="TAG&"+tagName
+            window.location.href='roomsdisplay?'+data;
+        }
+        content.appendChild(tag);
+    }
+
+    function randomColor(){
+        var v1=getRandomColorVal();
+        var v2=getRandomColorVal();
+        var v3=getRandomColorVal();
+        var colorVal="#"+v1+v2+v3;
+        return colorVal;
+    }
+
+    function getRandomColorVal(){
+        var raw=Math.random();
+        if(raw>0.3&&raw<0.8){
+            var firstVal=Math.round(raw*255);
+            var val=Math.round(firstVal%255);
+            var hexString=val.toString(16);
+            return hexString;
+        }else{
+            return getRandomColorVal();
+        }
+    }
+
+</script>

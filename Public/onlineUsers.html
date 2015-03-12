@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Online Users</title>
+    <link rel="stylesheet" href="FONT/Clemente/stylesheet.css">
+    <script>
+        var params = window.location.search.substr(1);
+        var params_arr = params.split('&');
+        var useremail = params_arr[0];
+        var room_id = params_arr[1];
+        var tags = [];
+        for (var i = 2; i < params_arr.length; i++) {
+            tags.push(params_arr[i]);
+        }
+    </script>
+</head>
+<body>
+<ul>
+    <li id="FollowingTab" class="selected">Following</li>
+    <li id="AllTab" class="unselected">All</li>
+</ul>
+<div id="main">
+    <div id="following">
+        <!--following list-->
+    </div>
+    <div id="all">
+        <!--all user list-->
+    </div>
+</div>
+<div id="bottomSubmit">
+    <div id="selectIndicator">SELECT:<a id="selectCount">0</a>/10</div>
+    <button id="submitBtn">submit</button>
+</div>
+</body>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    body::selection{
+        background-color: transparent;
+    }
+
+    ul {
+        display: block;
+        margin: 0 auto;
+        list-style: none;
+        text-align: left;
+        padding: 0;;
+        padding-top: 1px;
+    }
+
+    ul .selected{
+        background-color:#1C68A4 ;
+        text-shadow: 1px 1px #227DC5;
+    }
+
+    ul .unselected{
+        background-color: #227DC5;
+    }
+
+    ul li {
+        display: inline-block;
+        width: 100px;
+        padding: 10px;
+        color: #FFFFFF;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    ul li::selection{
+        background-color: transparent;
+    }
+
+    #main {
+        border-top: solid 5px #1C68A4;
+        border-top-right-radius: 5px;
+        padding-top: 5px;
+        padding-left: 5px;
+        height: 490px;
+        overflow-y: auto;
+    }
+
+    #main::selection{
+        background-color: transparent;
+    }
+
+    #bottomSubmit{
+        position: absolute;
+        bottom: 0px;
+        text-align: center;
+        width: 100%;
+    }
+
+    #bottomSubmit::selection{
+        background-color: transparent;
+    }
+
+    #selectIndicator{
+        display: block;
+        font-family: clementepdahbookitalic;
+        text-align: left;
+        cursor: default;
+    }
+
+    #selectIndicator::selection{
+        background-color: transparent;
+    }
+
+    #selectIndicator a{
+        display: inline-block;
+    }
+
+    #selectIndicator a::selection{
+        background-color: transparent;
+    }
+
+    #bottomSubmit button{
+        display: inline-block;
+        border: none;
+        width: 100px;
+        height: 40px;
+        cursor: pointer;
+        font-family: clementepdaksemibold;
+        font-size: 20px;
+        background-color: #1AAF5E;
+        color: #FFFFFF;
+        box-shadow: 0 0 1px 1px #008972;
+    }
+
+    #bottomSubmit button:hover{
+        box-shadow: 0 0 1px 1px #0092C7;
+    }
+
+    #bottomSubmit button:focus{
+        outline: none;
+    }
+
+    #bottomSubmit button::selection{
+        background-color: transparent;
+    }
+
+    #main #following{
+        display: block;
+    }
+
+    #main #all{
+        display: none;
+    }
+
+    #main .profile {
+        width: 99%;
+        height: 80px;
+        overflow: hidden;
+        line-height: 80px;
+        box-shadow: 0 0 1px 1px #1C68A4;
+        text-align: left;
+        padding: 0px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        position: relative;
+        background-color: #FCFCFC;
+    }
+
+    #main .profile::selection{
+        background-color: transparent;
+    }
+
+    #main .profile img {
+        width: 80px;
+        height: 80px;
+        display: inline-block;
+    }
+
+    #main .profile img::selection{
+        background-color: transparent;
+    }
+
+    #main .profile a {
+        display: inline-block;
+        width: 90px;
+        height: 80px;
+        line-height: 80px;
+        margin-left: 20px;
+        vertical-align: top;
+        font-family: clementepdaksemibold;
+    }
+
+    #main .profile a::selection{
+        background-color: transparent;
+    }
+
+    #main .profile b {
+        display: inline-block;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        width: 40px;
+        height: 80px;
+        position: absolute;
+        top: 0px;
+        right: 3px;
+    }
+
+    #main .profile .selected{
+        background-image: url("IMG/tick_circle.png");
+    }
+
+    #main .profile .unselected{
+        background-image: none;
+    }
+
+</style>
+</html>
+<script>
+    var selectedList=[];//selected users list
+
+    var submitButton=document.getElementById('submitBtn');
+
+    var selectCount=document.getElementById('selectCount');
+
+    var followingContainer = document.getElementById('following');
+
+    var allUsersContainer=document.getElementById('all');
+
+    //tabs elements
+    var FollowingTab=document.getElementById('FollowingTab');
+    var AllTab=document.getElementById('AllTab');
+
+    FollowingTab.onclick=function(){
+        switchTabs('FOLLOWING');
+    }
+
+    AllTab.onclick=function(){
+        switchTabs('ALL');
+    }
+
+    function switchTabs(tabName){
+        switch(tabName){
+            case 'FOLLOWING':{
+                followingContainer.style.display='block';
+                allUsersContainer.style.display='none';
+                FollowingTab.setAttribute('CLASS','selected');
+                AllTab.setAttribute('CLASS','unselected');
+            }break;
+
+            case 'ALL':{
+                followingContainer.style.display='none';
+                allUsersContainer.style.display='block';
+                FollowingTab.setAttribute('CLASS','unselected');
+                AllTab.setAttribute('CLASS','selected');
+            }break;
+
+            default :{
+                followingContainer.style.display='block';
+                allUsersContainer.style.display='none';
+                FollowingTab.setAttribute('CLASS','selected');
+                AllTab.setAttribute('CLASS','unselected');
+            }
+
+        }
+    }
+
+    function Profile(container, email, name, portrait) {
+        var profile = document.createElement('DIV');
+        profile.setAttribute('CLASS', 'profile');
+        profile.setAttribute('NAME', email);
+        var portrait_img = document.createElement('IMG');
+        portrait_img.setAttribute('SRC', portrait);
+        var username = document.createElement('A');
+        username.innerHTML = name;
+        var selectStatus = document.createElement('B');
+        selectStatus.setAttribute('CLASS','unselected');
+        profile.onclick=function(){
+            switch (selectStatus.getAttribute('CLASS')){
+                case 'selected':{
+                    if(RemoveSelect(email)){
+                        selectStatus.setAttribute('CLASS','unselected');
+                        profile.style.backgroundColor='#FCFCFC';
+                        username.style.color='#000000';
+                    }
+                }break;
+                case 'unselected':{
+                    if(AddSelect(email)){
+                        selectStatus.setAttribute('CLASS','selected');
+                        profile.style.backgroundColor='#56A7E0';
+                        username.style.color='#FFFFFF';
+                    }
+                }break;
+            }
+        };
+        profile.appendChild(portrait_img);
+        profile.appendChild(username);
+        profile.appendChild(selectStatus);
+        container.appendChild(profile);
+    }
+
+    function UpdateSelectCount(){
+        selectCount.innerHTML=selectedList.length;
+    }
+
+    function AddSelect(email){
+        if(selectedList.length<10){
+            selectedList.push(email);
+            UpdateSelectCount();
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function RemoveSelect(email){
+        var index=selectedList.indexOf(email);
+        if(index>-1){
+            selectedList.splice(index,1);
+            UpdateSelectCount();
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    parent.SOCKET.on('FOLLOWING', function (data) {//get following users data
+        parent.SOCKET.removeListener('FOLLOWING');
+        //use these data
+        for (var i = 0; i < data.length; i++) {
+            var name = data[i].name;
+            var email = data[i].email;
+            var portrait = data[i].portrait;
+            var status=data[i].status;
+            if(status!=='OFFLINE'){
+                new Profile(followingContainer,email,name,portrait);
+            }
+        }
+    });
+
+    parent.SOCKET.on('ONLINEUSERS', function (data) {//get all users data
+        parent.SOCKET.removeListener('ONLINEUSERS');
+        //use these data
+        for (var i = 0; i < data.length; i++) {
+            var name = data[i].name;
+            var email = data[i].email;
+            var portrait = data[i].portrait;
+            new Profile(allUsersContainer,email,name,portrait);
+        }
+    });
+
+    var requestFollowingData = {email: useremail};
+    parent.SOCKET.emit('FOLLOWING', requestFollowingData);
+    var requestAllUsersData={email:useremail,tags:[]};
+    parent.SOCKET.emit('ONLINEUSERS',requestAllUsersData);
+
+    submitButton.onclick=function(){
+        if(selectedList.length>0){
+            var data={room_id:room_id,name:parent.userName,invitees:selectedList};
+            parent.SOCKET.emit('SENDINVITE',data);
+        }else{
+            alert('Please select someone for invite!');
+        }
+    }
+
+    parent.SOCKET.on('SENDINVITE',function(data){
+        parent.SOCKET.removeListener('SENDINVITE');
+        if(data!=null){
+            switch (data.result){
+                case 'SUCCESS':{
+                    alert('All invitations are successfully sent');
+                    parent.layer.Dispose();
+                }break;
+
+                case 'PART':{
+                    alert(data.reason);
+                    parent.layer.Dispose();
+                }break;
+
+                default :{alert(data.result);}
+            }
+        }else{
+            alert('Fail to send invitations');
+        }
+    });
+
+</script>

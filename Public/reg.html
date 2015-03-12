@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="FONT/Clemente/stylesheet.css">
+</head>
+<body>
+<form id="step_one" target="IFRAME" onsubmit="stepOne()" style="display: block;">
+    <div class="line">
+        <h1>Register [Step 1]</h1>
+    </div>
+    <div class="line">
+        <h3>Complete basic infomation</h3>
+    </div>
+    <div class="line">
+        <label>Name</label><input type="text" id="name" required="yes" class="box" placeholder="Your nick name">
+    </div>
+    <div class="line">
+        <label>Email</label><input type="text" id="email" required="yes" class="box" placeholder="Your email address">
+    </div>
+    <div class="line">
+        <label>Password</label><input type="password" id="password" required="yes" class="box" placeholder="Your password">
+    </div>
+    <div class="line">
+        <label>Password confirm</label><input type="password" id="password_confirm" required="yes" class="box" placeholder="Confirm your password">
+    </div>
+    <div class="line">
+        <input type="submit" id="step_one_next" value="Next" class="submit">
+    </div>
+</form>
+<form id="step_two" target="IFRAME" onsubmit="stepTwo()" style="display: none;">
+    <div class="line">
+        <h1>Register [Step 2]</h1>
+        <h3>Upload a portrait</h3>
+    </div>
+    <div class="line">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="line">
+        <button id="selectImage" class="submit">Select Image...</button>
+        <input type="file" id="file" style="display: none;">
+    </div>
+    <div class="line">
+        <input type="submit" id="submit" value="Submit" class="submit">
+    </div>
+</form>
+<iframe id="IFRAME" name="IFRAME" style="display: none;"></iframe>
+</body>
+<style>
+    h1{
+        font-family: coolveticaregular;
+        margin-top: 5px;
+        margin-bottom: 0;
+    }
+    h3{
+        font-family: clementepdahbookitalic;
+        padding: 0;
+        margin: 0;
+        color: #56A7E0;
+    }
+    form{
+        text-align: center;
+    }
+    form .line{
+        display: block;
+        width: inherit;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    form .line label{
+        display: inline-block;
+        width: 200px;
+        font-family: clementepdairegular;
+        font-size: 20px;
+    }
+
+    form .line .box{
+        box-shadow: 0 0 1px 1px #227DC5;
+    }
+
+    form .line input{
+        border: none;
+        display: inline-block;
+        height: 30px;
+        width: 300px;
+        border-radius: 5px;
+        text-align: center;
+        font-family: clementepdacextralight;
+        font-size: 20px;
+    }
+
+    .submit{
+        border: none;
+        text-align: center;
+        border-radius: 5px;
+        display: inline-block;
+        width: 300px;
+        margin-top: 10px;
+        font-family: clementepdambold;
+        height: 40px;
+        cursor: pointer;
+        background-color: #E97E06;
+        color: #FFFFFF;
+        transition: ease 0.1s;
+    }
+    .submit:hover{
+        box-shadow: 0 0 1px 1px #227DC5;
+    }
+
+    #selectImage{
+        height: 30px;
+        font-size: 15px;
+        background-color: #1C68A4;
+    }
+
+    #canvas{
+        background-color:#FFFFFF;
+        width: 300px;
+        height: 300px;
+        border-radius: 5px;
+        box-shadow: 0 0 2px 2px #1C68A4;
+    }
+</style>
+<script>
+    var name=null;
+    var email=null;
+    var password=null;
+    var portraitData=null;
+    var form_step1=document.getElementById('step_one');
+    var form_step2=document.getElementById('step_two');
+    var canvas=document.getElementById('canvas');
+    canvas.width=300;
+    canvas.height=300;
+    var content=canvas.getContext('2d');
+    var fileBtn=document.getElementById('file');
+    var selectBtn=document.getElementById('selectImage');
+    var img=new Image();
+    var selected=false;
+    var isClickSubit=false;
+    var submitBtn=document.getElementById('submit');
+    submitBtn.onclick=function(){
+        isClickSubit=true;
+    }
+    selectBtn.onclick=function(){
+        fileBtn.click();
+        isClickSubit=false;
+    }
+
+    fileBtn.onchange=function(){
+        var reader=new FileReader();
+        reader.readAsDataURL(this.files[0]);
+        reader.onload=function(e){
+            img.src=this.result;
+            content.drawImage(img,0,0);
+            selected=true;
+        }
+    }
+
+    function stepOne(){
+        name=document.getElementById('name').value;
+        email=document.getElementById('email').value;
+        var pwd=document.getElementById('password').value;
+        var pwd_confirm=document.getElementById('password_confirm').value;
+        if(pwd===pwd_confirm){
+            password=document.getElementById('password').value;
+            form_step1.style.display='none';
+            form_step2.style.display='block';
+        }else{
+            alert('Password not same!');
+        }
+    }
+
+    function stepTwo(){
+        if(selected){
+            portraitData=canvas.toDataURL('image/jpeg');
+            var data={"name":name,"email":email,"password":password,"portrait":portraitData};
+            parent.SOCKET.emit('REG',data);
+        }else{
+            if(isClickSubit){
+                alert('Please upload a portrait!');
+            }
+        }
+    }
+
+    parent.SOCKET.on('REG',function(data){
+        if(data.result==='success'){
+            //success
+            parent.userName=data.name;
+            parent.userEmail=data.email;
+            parent.userPortraitData=data.portrait;
+            parent.showUserInfo();
+            parent.RegPersonalSocket();
+            parent.layer.Dispose();
+        }else if(data===undefined){
+            //error occurred
+            alert('Register Fail: Server error')
+        }else{
+            //fail
+            alert('Register Fail:'+data.reason)
+        }
+    });
+</script>
+</html>

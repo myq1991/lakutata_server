@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="FONT/Clemente/stylesheet.css">
+    <title>User Profile Mini</title>
+    <script src="JS/socket.io.js"></script>
+    <script src="JS/server.js"></script>
+    <script>
+        var useremail=window.location.search.substr(1);
+        var miniSocket = io.connect(server);
+    </script>
+</head>
+<body>
+<div id="card">
+    <label id="username_label"></label>
+    <button id="follow_button"></button>
+</div>
+<style>
+    body{
+        padding: 0;
+        margin: 0;
+        height: 50px;
+    }
+    #card{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: auto;
+        padding-right: 10px;
+        padding-left: 10px;
+        height: 100%;
+        text-align: left;
+        display: block;
+        line-height: 50px;
+        overflow: hidden;
+    }
+
+    #card label{
+        display: inline-block;
+        vertical-align: top;
+        font-family: clementepdambold;
+        height: 50px;
+        vertical-align: middle;
+    }
+
+    #card button{
+        display: inline-block;
+        border: none;
+        color: #FFFFFF;
+        vertical-align: middle;
+        height: 30px;
+        cursor: pointer;
+        box-shadow: 0 0 1px 1px #CCCCCC;
+        margin-left: 10px;
+        width: 80px;
+    }
+
+    #card .follow{
+        background-color: #008972;
+    }
+
+    #card .stop_follow{
+        background-color: #D64D55;
+    }
+</style>
+</body>
+</html>
+<script>
+    miniSocket.emit('GETUSERINFO',{email:useremail});
+    miniSocket.on('GETUSERINFO',function(data){
+        var username=document.getElementById('username_label');
+        username.innerHTML=data.data.name;
+        var obj={email:useremail};
+        var btn=document.getElementById('follow_button');
+        if(isInside(parent.parent.myFollowing,useremail)){
+            //already follow
+            btn.setAttribute('CLASS','stop_follow');
+            btn.innerHTML='CANCEL';
+            btn.onclick=function(){
+                var sendData={clientEmail:parent.parent.userEmail,targetEmail:useremail};
+                miniSocket.emit('STOPFOLLOWING',sendData);
+                miniSocket.on('STOPFOLLOWING',function(result){
+                    updateFollowingList();
+                    parent.document.getElementById('notification_box').style.display='none';
+                });
+            }
+        }else{
+            //didn't follow
+            btn.setAttribute('CLASS','follow');
+            btn.innerHTML='FOLLOW';
+            btn.onclick=function(){
+                var sendData={userEmail:parent.parent.userEmail,followEmail:useremail};
+                miniSocket.emit('ADDFOLLOW',sendData);
+                miniSocket.on('ADDFOLLOW',function(data){
+                    miniSocket.removeListener('ADDFOLLOW');
+                    if(data!=null){
+                        if(data.result){
+                            //success
+                            updateFollowingList();
+                            parent.document.getElementById('notification_box').style.display='none';
+                        }else{
+                            //fail
+                            alert(data.reason);
+                        }
+                    }else{
+                        alert('Server error');
+                    }
+                });
+            }
+        }
+        parent.document.getElementById('notification_box').style.width=username.offsetWidth+120+'px';
+    });
+
+    function isInside(array,email){
+        for(var i=0;i<array.length;i++){
+            if(array[i].email===email){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function updateFollowingList(){
+        var data={email:parent.parent.userEmail};
+        miniSocket.emit('GETUSERINFO',data);
+        miniSocket.on('GETUSERINFO',function(result){
+            parent.parent.myFollowing=result.data.following;
+        });
+    }
+</script>

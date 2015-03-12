@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="FONT/Clemente/stylesheet.css">
+    <link rel="stylesheet" href="FONT/coolvetica/stylesheet.css">
+    <script src="JS/socket.io.js"></script>
+    <script src="JS/server.js"></script>
+    <title>Display Rooms</title>
+    <script>
+        var data_obj = null;
+        var data = window.location.search.substr(1);
+        var data_arr = data.split("&");
+        var type = data_arr[0];
+        if (type.localeCompare('TAG') === 0) {
+            //get by tag
+            var tagName = data_arr[1];
+            data_obj = {type: "TAG", tagName: tagName};
+        } else {
+            //get all
+            data_obj = {type: "ALL"};
+        }
+    </script>
+</head>
+<body>
+<div id="content">
+    <!--<div class="room">-->
+        <!--<div class="left">-->
+            <!--<div class="line">-->
+                <!--<label></label>-->
+                <!--<a>TEST THEME is a new theme sdf sad fsd fsdf ew r erwt ewqr we weqr erwt rewt rewt ert ertw rty erwt </a>-->
+            <!--</div>-->
+            <!--<div class="tagline">-->
+                <!--<label>TAGS:</label>-->
+                <!--<a>computer</a>-->
+            <!--</div>-->
+            <!--<div class="attenderline">-->
+                <!--<label>ATTENDERS:</label>-->
+
+                <!--<div class="attenders">-->
+                    <!--<img src="IMG/kitty.png">-->
+                    <!--<img src="IMG/kitty.png">-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="right">-->
+            <!--<button class="join_btn">Back</button>-->
+            <!--<button class="open_btn">Join</button>-->
+            <!--<button class="view_btn">View</button>-->
+        <!--</div>-->
+    <!--</div>-->
+</div>
+</body>
+<style>
+    body {
+        margin: 0;
+        text-align: center;
+    }
+
+    #content {
+        margin-top: 10px;
+        display: inline-block;
+        background-color: #FFFFFF;
+        width: 880px;
+        padding: 10px;
+        box-shadow: 0 0 1px 1px #CCCCCC;
+        text-align: center;
+    }
+
+    .room {
+        display: inline-block;
+        width: 95%;
+        min-height: 100px;
+        /*background-color: #56A7E0;*/
+        /*background-color: #9FE0F6;*/
+        margin-bottom: 10px;
+        margin-top: 5px;
+        /*box-shadow: 0 0 2px 1px #227DC5;*/
+        /*color: #E6EAEE;*/
+        color: #0092C7;
+        border-top: solid 2px #227DC5;
+        position: relative;
+        font-family: clementepdairegular;
+    }
+
+    .room:hover{
+        background-color: #FCFCFC;
+    }
+
+    .room .left {
+        display: inline-block;
+        text-align: left;
+        vertical-align: top;
+        width: 80%;
+        cursor: default;
+        position: relative;
+        margin-left: -4px;
+    }
+
+    .room .left .line {
+        display: block;
+        /*border-bottom: solid 2px #FFFFFF;*/
+        /*border-bottom: solid 2px #F2572D;*/
+        background-color: #227DC5;
+        padding: 5px;
+        font-size: 20px;
+        width: auto;
+        margin-left: -2px;
+        border-bottom-left-radius: 2px;
+        border-bottom-right-radius: 2px;
+        position: absolute;
+        left: 0;
+        white-space : nowrap;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        overflow: hidden;
+        max-width: 600px;
+        color: #FFFFFF;
+    }
+
+    .room .left .line label {
+        /*color: #CCCCCC;*/
+        color: #CCCCCC;
+        font-size: 15px;
+        overflow: hidden;
+        background-color: #97EC71;
+        display: inline-block;
+        height: 15px;
+        width: 15px;
+        border-radius: 100%;
+        margin-right: 3px;
+    }
+
+    .room .left .line a {
+        /*color: #FCFCFC*/
+        color: #FFFFFF;
+    }
+
+    .room .left .tagline {
+        display: block;
+        width: auto;
+        padding: 5px;
+        margin-top: 35px;
+    }
+
+    .room .left .tagline a {
+        color: #444444;
+        /*border-bottom: solid 2px #FFFFFF;*/
+        border-bottom: solid 2px #008972;
+        padding: 1px;
+        padding-bottom: 5px;
+        margin-left: 5px;
+        margin-right: 5px;
+        transition: ease 0.2s;
+    }
+
+    .room .left .tagline a:hover {
+        border-bottom: solid 5px #006B57;
+        padding-bottom: 2px;
+    }
+
+    .room .left .attenderline {
+        display: block;
+        padding: 5px;
+        font-size: 20px;
+        margin-top: 5px;
+    }
+
+    .room .left .attenderline .attenders {
+        display: inline-block;
+        vertical-align: top;
+        width: 570px;
+    }
+
+    .room .left .attenderline .attenders img {
+        vertical-align: top;
+        width: 30px;
+        height: 30px;
+        border-radius: 2px;
+        box-shadow: 0 0 1px 1px #333333;
+        margin-bottom: 5px;
+        margin-left: 5px;
+    }
+
+    .room .left .attenderline label {
+        font-size: 15px;
+        width: 100px;
+    }
+
+    .room .right {
+        width: 19%;
+        display: inline-block;
+        text-align: center;
+        vertical-align: top;
+        height: 100px;
+        line-height: 100px;
+        position: relative;
+    }
+
+    .room .right button {
+        display: inline-block;
+        border: none;
+        cursor: pointer;
+        width: 80px;
+        height: 45px;
+        line-height: 45px;
+        border-radius: 2px;
+        color: #FFFFFF;
+        font-family: coolveticaregular;
+        font-size: 25px;
+        /*box-shadow: 0 0 1px 1px #CCCCCC;*/
+        position: absolute;
+        right: 200px;
+        top: -12px;
+        transition: ease 0.3s;
+        border-top-left-radius: 1px;
+    }
+
+    .room .right button::selection{
+        outline: none;
+    }
+
+    .room .right .view_btn {
+        right: 10px;
+        background-color: #F2572D;
+    }
+
+    .room .right .open_btn {
+        right: 105px;
+        background-color: #EFC028;
+    }
+
+    .room .right .join_btn {
+        right: 105px;
+        background-color: #00ABD8;
+    }
+
+    .room .right .view_btn:before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 0px;
+        height: 0px;
+        left: -10px;
+        top: 0;
+        border-bottom: 10px solid #E04D28;
+        border-left: 10px solid transparent;
+        /*background-color: #227DC5;*/
+    }
+
+    .room .right .open_btn:before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 0px;
+        height: 0px;
+        left: -10px;
+        top: 0;
+        border-bottom: 10px solid #DDAF25;
+        border-left: 10px solid transparent;
+        /*background-color: #227DC5;*/
+    }
+
+    .room .right .join_btn:before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 0px;
+        height: 0px;
+        left: -10px;
+        top: 0;
+        border-bottom: 10px solid #0096BC;
+        border-left: 10px solid transparent;
+        /*background-color: #227DC5;*/
+    }
+
+    .room .right button:before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 0px;
+        height: 0px;
+        left: -10px;
+        top: 0;
+        border-bottom: 10px solid #97EC71;
+        border-left: 10px solid transparent;
+        /*background-color: #227DC5;*/
+    }
+
+    .room .right button:hover {
+        color: #FCFCFC;
+        padding-bottom: 100px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .room .right .join {
+        /*background-color: #1AAF5E;*/
+        background-color: #008972;
+    }
+
+    .room .right .enter {
+        /*background-color: #6B9AFF;*/
+        background-color: #97EC71;
+    }
+</style>
+</html>
+<script>
+    var content = document.getElementById('content');
+    var tmp_socket = new io.connect(server);
+    tmp_socket.on('GETUSERINFO', function (RecvData) {
+        if (RecvData != null) {
+            var id = RecvData.id;
+            var UserData = RecvData.data;
+            var img = new Image();
+            img.src = UserData.portrait;
+            img.title = UserData.name;
+            document.getElementById(id).appendChild(img);
+        }
+    });
+    if (data_obj != null) {
+        parent.SOCKET.emit('SEARCHROOMS', data_obj);
+        parent.SOCKET.on('SEARCHROOMS', function (RoomsData) {
+            parent.SOCKET.removeListener('SEARCHROOMS');//remove listener
+            for (var i = RoomsData.length-1; i >-1 ; i--) {
+                //create room card
+                new Bar(RoomsData[i]);
+            }
+            //loadLoop(obj_array);
+        });
+    } else {
+        document.write('Page load error');
+    }
+
+    parent.SOCKET.on('JOINROOM', function (data) {
+        parent.SOCKET.removeListener('JOINROOM');
+        if (data.result) {
+            var theme = data.theme;
+            var emcee = data.emcee;
+            var room_id = data.room_id;
+            parent.currentRoomId = room_id;
+            window.location.href = 'chatting?' + room_id;
+        } else {
+            alert('Fail to join this room');
+        }
+    });
+
+    function Bar(obj) {
+        var id = obj._id;
+        var emcee = obj.emcee;
+        var theme = obj.theme;
+        var datetime = obj.datetime;
+        var tags = obj.tags;
+        var attenders = obj.attenders;
+        var room = document.createElement('DIV');
+        room.setAttribute('class', 'room');
+        var left = document.createElement('DIV');
+        left.setAttribute('class', 'left');
+        var right = document.createElement('DIV');
+        right.setAttribute('class', 'right');
+        var line = document.createElement('DIV');
+        var themeLabel = document.createElement('LABEL');
+        var themeName = document.createElement('A');
+        themeName.innerHTML = theme;
+        line.appendChild(themeLabel);
+        line.appendChild(themeName);
+        line.setAttribute('class', 'line');
+        var tagline = document.createElement('DIV');
+        var tagLabel = document.createElement('LABEL');
+        tagLabel.innerHTML = 'TAGS:';
+        tagline.appendChild(tagLabel);
+        for (var t = 0; t < tags.length; t++) {
+            var tagName = document.createElement('A');
+            tagName.innerHTML = tags[t].tag;
+            tagline.appendChild(tagName);
+        }
+        tagline.setAttribute('class', 'tagline');
+        var attenderline = document.createElement('DIV');
+        var attenderLabel = document.createElement('LABEL');
+        attenderLabel.innerHTML = 'ATTENDEES:';
+        attenderline.appendChild(attenderLabel);
+        var attendersDIV = document.createElement('DIV');
+        attendersDIV.setAttribute('class', 'attenders');
+        attendersDIV.setAttribute('id', id);
+        attenderline.appendChild(attendersDIV);
+        attenderline.setAttribute('class', 'attenderline');
+        left.appendChild(line);
+        left.appendChild(tagline);
+        left.appendChild(attenderline);
+
+        var button = document.createElement('BUTTON');
+        var txt = null;
+        if (isContain(attenders, parent.userEmail)) {
+            txt = "Enter";
+            button.setAttribute('class', 'join_btn');
+        } else {
+            txt = "Join";
+            button.setAttribute('class', 'open_btn');
+        }
+        button.innerHTML = txt;
+        button.onclick = function () {
+            //join the room
+            var sendData = {email: parent.userEmail, room_id: id};
+            parent.SOCKET.emit('JOINROOM', sendData);
+        }
+
+        var view_btn = document.createElement('BUTTON');
+        view_btn.innerHTML='View';
+        view_btn.setAttribute('CLASS','view_btn');
+
+        right.appendChild(button);
+        right.appendChild(view_btn);
+        room.appendChild(left);
+        room.appendChild(right);
+        content.appendChild(room);
+        for (var a = 0; a < attenders.length; a++) {
+            var sendData = {id: id, email: attenders[a]};
+            tmp_socket.emit('GETUSERINFO', sendData);
+        }
+    }
+
+    function isContain(arr, obj) {
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
