@@ -6,7 +6,6 @@ var online = require('./Libs/online.js');
 function WebSocket() {
 
     var FUNC_LIST_TMP = null;
-    //var io = require('socket.io').listen(require('http').createServer().listen(require('../config.json').WebSocket));
     var io=require('./Libs/IO.js').IO;
 
     io.on('connection', function (socket) {
