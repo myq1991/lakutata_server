@@ -1,5 +1,4 @@
 var path = require('path');
-var path = require('path');
 var fs = require('fs');
 var online = require('./Libs/online.js');
 
