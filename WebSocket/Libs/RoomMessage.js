@@ -6,6 +6,7 @@ var db_operation = require(path.join(__dirname, '/../../Database'));
 var ObjectId=require('mongodb').ObjectID;
 var online=require('./online.js');
 var io=require('./IO.js').IO;
+var retriever=require(path.join(__dirname, '/../../Search_Engine'));
 
 exports.Run=function(data,callback){
     var room_id=data.room_id;
@@ -20,6 +21,10 @@ exports.Run=function(data,callback){
                 //next operation, insert data and update
                 db_operation.findData('users',{email:senderEmail},function(err,userData){
                     if(!err){
+                        if(type==='TXT'){
+                            //text data, retrieve it
+                            retriever.Retrieve(message,room_id);
+                        }
                         var senderName=userData[0].name;
                         var senderPortrait=userData[0].portrait;
                         var appendData= {senderName:senderName,senderPortrait:senderPortrait,type:type,message:message,senderEmail:senderEmail,datetime:datetime};//message data structure

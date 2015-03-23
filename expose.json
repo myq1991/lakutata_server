@@ -10,5 +10,6 @@
   "userhomepage":"UserHomePage.html",
   "publichomepage":"PublicHomePage.html",
   "onlineusers":"onlineUsers.html",
-  "invitations":"invitations.html"
+  "invitations":"invitations.html",
+  "this_is_a_test":"test.html"
 }

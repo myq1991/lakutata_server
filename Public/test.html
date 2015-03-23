@@ -2,9 +2,18 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    <script src="JS/socket.io.js"></script>
+    <script src="JS/server.js"></script>
+    <title>test page</title>
 </head>
 <body>
-<a href="index">testf</a>
+<script>
+    var SOCKET = io.connect(server);
+    var data={message:"this is a test, this request is from client-side"};
+    SOCKET.emit('TESTING',data);
+    SOCKET.on('TESTING',function(data){
+        document.write(data);
+    });
+</script>
 </body>
 </html>

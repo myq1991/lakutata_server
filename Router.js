@@ -23,6 +23,7 @@ router.get('/:name',function(req,res){
             res.status(200).send(data);
         });
     }else{
+        console.log("Request has denied");
         res.status(404).send('page not found');
     }
 });

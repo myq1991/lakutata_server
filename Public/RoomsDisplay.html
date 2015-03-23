@@ -16,7 +16,11 @@
             //get by tag
             var tagName = data_arr[1];
             data_obj = {type: "TAG", tagName: tagName};
-        } else {
+        } else if(type.localeCompare('KEYWORDS')===0){
+            //get by keywords
+            var keywords=data_arr[1];
+            data_obj={type:"KEYWORDS",KeyWords:keywords};
+        }else{
             //get all
             data_obj = {type: "ALL"};
         }

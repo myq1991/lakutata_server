@@ -35,7 +35,7 @@
 
     <div id="header_search">
         <input type="text" id="header_search_box" placeholder="Search answers for your question">
-        <input type="button" id="header_search_button">
+        <input type="button" id="header_search_button" onclick="search()">
     </div>
     <div id="header_user_info">
         <div id="header_user_panel" style="display: none">
@@ -144,6 +144,17 @@
         }
     }
 
+    function search(){
+        var inputBox=document.getElementById('header_search_box');
+        var keywords=inputBox.value;
+        if(keywords!=""){
+            var data="KEYWORDS&"+keywords;
+            MainFrameHref('roomsdisplay?'+data);
+        }else{
+            alert('Please input question');
+        }
+    }
+
 </script>
 <script>
 
@@ -215,4 +226,5 @@
             unread_invitations.style.display='none';
         }
     }
+
 </script>
