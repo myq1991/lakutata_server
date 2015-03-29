@@ -31,7 +31,7 @@ exports.Run=function(data,callback){
         }break;
 
         case 'KEYWORDS':{
-            var keywords=data.KeyWords.split(" ");
+            var keywords=data.KeyWords.split('%20');
             next(0,keywords,[],function(result){
                 var tmp_array=[];
                 //get a array which contain sub-array for every keyword
@@ -69,7 +69,7 @@ exports.Run=function(data,callback){
                 }
                 //got ids, return data
                 BDNext(0,pure_ids,[],function(result){
-                    console.log(result);
+                    //console.log(result);
                     callback(null,result);
                 });
 
