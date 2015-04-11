@@ -344,6 +344,9 @@
             var room_id = data.room_id;
             parent.currentRoomId = room_id;
             window.location.href = 'chatting?' + room_id;
+            if(parent.document.getElementById("chatting_li").style.display==="none"){
+                parent.document.getElementById("chatting_li").style.display="block";
+            }
         } else {
             alert('Fail to join this room');
         }
@@ -409,10 +412,15 @@
         }
 
         var view_btn = document.createElement('BUTTON');
+        view_btn.onclick=function(){
+            parent.currentRoomId = obj._id;
+            window.location.href = 'viewing?' + obj._id;
+        }
         view_btn.innerHTML='View';
         view_btn.setAttribute('CLASS','view_btn');
-
-        right.appendChild(button);
+        if(parent.userEmail!=null){
+            right.appendChild(button);
+        }
         right.appendChild(view_btn);
         room.appendChild(left);
         room.appendChild(right);

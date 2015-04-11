@@ -87,6 +87,7 @@
                 parent.SOCKET.on('STOPFOLLOWING',function(data){
                     if(data==='success'){
                         card.style.display='none';
+                        parent.SOCKET.emit('GETUSERINFO',{email:parent.userEmail});
                     }
                 });
             }

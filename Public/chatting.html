@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="FONT/Clemente/stylesheet.css">
     <link rel="stylesheet" href="FONT/coolvetica/stylesheet.css">
     <link rel="stylesheet" href="CSS/notificationBox.css">
+    <script src="JS/NewLayer.js"></script>
     <script>
         var room_id = window.location.search.substr(1);
         var portraits = [];
@@ -43,8 +44,7 @@
     <div id="input_area">
         <div id="tools">
             <span class="tool" id="invite"><img src="IMG/invite.png"><a>INVITE</a></span>
-            <span class="tool"><img src="IMG/image.png"><a>IMAGE</a><div class="innerTool"><a>Local Image</a><a>Internet
-                Image</a></div></span>
+            <span class="tool"><img src="IMG/image.png"><a onclick="openImage()">IMAGE</a><input type="file" id="ImageFile" hidden="hidden"></span>
         </div>
         <textarea id="text_input"></textarea>
 
@@ -82,6 +82,10 @@
         vertical-align:bottom;
         font-family: clementepdaahairline;
         color: #666666;
+    }
+
+    .IMG{
+        cursor: pointer;
     }
 
     #content {
@@ -397,9 +401,7 @@
         switch (type) {
             case 'IMG':
             {
-                var contentImg = new Image();
-                contentImg.src = message;
-                content.appendChild(contentImg);
+                content.innerHTML = "<img src='"+message+"' class='IMG' height='200' onclick='presentImg("+'"'+message+'"'+")'>";
             }
                 break;
             case 'TXT':
@@ -453,5 +455,31 @@
         this.isInside=function(){
             return isInside;
         }
+    }
+
+    function openImage(){
+        var image_input=document.getElementById("ImageFile");
+        image_input.click();
+        image_input.onchange=function(){
+            var reader=new FileReader();
+            reader.readAsDataURL(this.files[0]);
+            reader.onload=function(e){
+                var message = this.result;
+                var data = {room_id: room_id, type: "IMG", message: message, senderEmail: parent.userEmail};
+                var localData = {
+                    senderName: parent.userName,
+                    senderPortrait: parent.userPortraitData,
+                    type: "IMG",
+                    message: message,
+                    senderEmail: parent.userEmail,
+                    datetime: Date.now()
+                };
+                parent.SOCKET.emit('ROOMMESSAGE', data);
+            }
+        }
+    }
+
+    function presentImg(data){
+        window.open(data);
     }
 </script>

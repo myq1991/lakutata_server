@@ -192,6 +192,7 @@
             parent.showUserInfo();
             parent.RegPersonalSocket();
             parent.switchSideBar();
+            parent.SOCKET.emit('GETUSERINFO',{email:data.email});
             parent.layer.Dispose();
         }else if(data===undefined){
             //error occurred

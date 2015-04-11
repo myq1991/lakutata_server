@@ -18,6 +18,9 @@
         SOCKET.on('disconnect', function (data) {
             //when server is closed
         });
+        SOCKET.on('GETUSERINFO',function(result){
+            myFollowing=result.data.following;
+        });
     </script>
     <script>
         var userName = null;
@@ -29,7 +32,7 @@
 </head>
 <body>
 <header id="header">
-    <div id="header_logo">
+    <div id="header_logo" onclick="Home_Click()">
         <img src="IMG/logo4.png">
     </div>
 
@@ -57,7 +60,7 @@
         <li onclick="Tags_Click()"><img src="IMG/tags.png"><a>TAGS</a></li>
         <li onclick="Invite_Click()"><span class="unread" id="unread_invitations">0</span><img
                 src="IMG/inviteMe.png"><a>INVITE ME</a><b/></li>
-        <li onclick="Chatting_Click()"><span class="unread" id="unread_messages">0</span><img SRC="IMG/chatting.png"><a>CHATTING</a><b/>
+        <li onclick="Chatting_Click()" id="chatting_li" style="display: none"><span class="unread" id="unread_messages">0</span><img SRC="IMG/chatting.png"><a>CHATTING</a><b/>
         </li>
         <li onclick="Following_Click()"><img SRC="IMG/friends.png"><a>FOLLOWING</a><b/></li>
     </ul>
@@ -144,12 +147,19 @@
         }
     }
 
+    document.getElementById("header_search_box").onkeydown=function(evt){
+        if(evt.keyCode===13){
+            search();
+        }
+    }
+
     function search() {
         var inputBox = document.getElementById('header_search_box');
         var keywords = inputBox.value;
         if (keywords != "") {
             var data = "KEYWORDS&" + keywords;
             MainFrameHref('roomsdisplay?' + data);
+            inputBox.value="";
         } else {
             alert('Please input question');
         }
@@ -234,11 +244,12 @@
             sidebar.style.visibility = "hidden";
             main.style.marginLeft = "0px";
             main.style.width = window.innerWidth + "px";
-            Tags_Click();
+            Home_Click();
         } else {
             sidebar.style.visibility = "visible";
             main.style.marginLeft = "205px";
             main.style.width = window.innerWidth - 205 + "px";
+            Home_Click();
         }
     }
 

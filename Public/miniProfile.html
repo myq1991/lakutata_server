@@ -78,10 +78,10 @@
             btn.setAttribute('CLASS','stop_follow');
             btn.innerHTML='CANCEL';
             btn.onclick=function(){
+                updateFollowingList();
                 var sendData={clientEmail:parent.parent.userEmail,targetEmail:useremail};
                 miniSocket.emit('STOPFOLLOWING',sendData);
                 miniSocket.on('STOPFOLLOWING',function(result){
-                    updateFollowingList();
                     parent.document.getElementById('notification_box').style.display='none';
                 });
             }
@@ -109,7 +109,12 @@
                 });
             }
         }
-        parent.document.getElementById('notification_box').style.width=username.offsetWidth+120+'px';
+        if(parent.parent.userEmail===null){
+            btn.style.display="none";
+            parent.document.getElementById('notification_box').style.width=username.offsetWidth+50+'px';
+        }else{
+            parent.document.getElementById('notification_box').style.width=username.offsetWidth+120+'px';
+        }
     });
 
     function isInside(array,email){
@@ -123,9 +128,10 @@
 
     function updateFollowingList(){
         var data={email:parent.parent.userEmail};
-        miniSocket.emit('GETUSERINFO',data);
-        miniSocket.on('GETUSERINFO',function(result){
-            parent.parent.myFollowing=result.data.following;
-        });
+        parent.parent.SOCKET.emit('GETUSERINFO',data);
+//        miniSocket.emit('GETUSERINFO',data);
+//        miniSocket.on('GETUSERINFO',function(result){
+//            parent.parent.myFollowing=result.data.following;
+//        });
     }
 </script>
