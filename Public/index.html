@@ -23,7 +23,7 @@
         var userName = null;
         var userEmail = null;
         var userPortraitData = null;
-        var myFollowing=[];
+        var myFollowing = [];
         var onlineList = null;
     </script>
 </head>
@@ -103,8 +103,8 @@
     var unread_messages = document.getElementById('unread_messages');
     var unread_count = 0;
 
-    var unread_invitations=document.getElementById('unread_invitations');
-    var invitations_count=0;
+    var unread_invitations = document.getElementById('unread_invitations');
+    var invitations_count = 0;
 
     var main_frame = document.getElementById('main_frame');
     function MainFrameHref(uri) {
@@ -119,7 +119,7 @@
     }
 
     function Invite_Click() {
-        invitations_count=0;
+        invitations_count = 0;
         setUnreadInvitations(0);
         MainFrameHref('invitations');
     }
@@ -144,13 +144,13 @@
         }
     }
 
-    function search(){
-        var inputBox=document.getElementById('header_search_box');
-        var keywords=inputBox.value;
-        if(keywords!=""){
-            var data="KEYWORDS&"+keywords;
-            MainFrameHref('roomsdisplay?'+data);
-        }else{
+    function search() {
+        var inputBox = document.getElementById('header_search_box');
+        var keywords = inputBox.value;
+        if (keywords != "") {
+            var data = "KEYWORDS&" + keywords;
+            MainFrameHref('roomsdisplay?' + data);
+        } else {
             alert('Please input question');
         }
     }
@@ -168,7 +168,7 @@
                         var inviterName = data.inviter;
                         var room_id = data.room_id;
                         //alert(inviterName + ' send a invitation for you');
-                        invitations_count+=1;
+                        invitations_count += 1;
                         setUnreadInvitations(invitations_count);
                     }
                         break;
@@ -196,11 +196,11 @@
         var url = main_frame.contentWindow.location.href;
         var arr = url.split('?');
         var para = arr[0];
-        var len=para.length;
-        var tmp_name=para.substr(len-8,len);
-        if( tmp_name.localeCompare('chatting')===0){
-            number=0;
-            unread_count=0;
+        var len = para.length;
+        var tmp_name = para.substr(len - 8, len);
+        if (tmp_name.localeCompare('chatting') === 0) {
+            number = 0;
+            unread_count = 0;
         }
         if (number > 0) {
             unread_messages.style.display = 'block';
@@ -214,17 +214,33 @@
         }
     }
 
-    function setUnreadInvitations(number){
-        if(number>0){
-            unread_invitations.style.display='block';
-            if(number>99){
-                unread_invitations.innerHTML='99+';
-            }else{
-                unread_invitations.innerHTML=number;
+    function setUnreadInvitations(number) {
+        if (number > 0) {
+            unread_invitations.style.display = 'block';
+            if (number > 99) {
+                unread_invitations.innerHTML = '99+';
+            } else {
+                unread_invitations.innerHTML = number;
             }
-        }else{
-            unread_invitations.style.display='none';
+        } else {
+            unread_invitations.style.display = 'none';
         }
     }
 
+    function switchSideBar() {
+        var sidebar = document.getElementById("side_bar");
+        var main = document.getElementById("main");
+        if (userEmail == null) {
+            sidebar.style.visibility = "hidden";
+            main.style.marginLeft = "0px";
+            main.style.width = window.innerWidth + "px";
+            Tags_Click();
+        } else {
+            sidebar.style.visibility = "visible";
+            main.style.marginLeft = "205px";
+            main.style.width = window.innerWidth - 205 + "px";
+        }
+    }
+
+    switchSideBar();
 </script>

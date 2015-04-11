@@ -13,6 +13,7 @@ exports.Retrieve=function(plaintext,RoomId){
 }
 
 exports.Search=function(keyword,callback){
+    keyword=keyword.toUpperCase();
     db_operation.findData('retrieve',{word:keyword},function(err,result){
         if(!err){
             if(result[0]!=null){
@@ -58,6 +59,7 @@ exports.Search=function(keyword,callback){
 }
 
 function addRetrieve(Word,RoomId){
+    Word=Word.toUpperCase();
     db_operation.findData('retrieve',{word:Word},function(err,result){
         if(result[0]!=null){
             //already in retrieve collection
