@@ -18,9 +18,6 @@
         SOCKET.on('disconnect', function (data) {
             //when server is closed
         });
-        SOCKET.on('GETUSERINFO',function(result){
-            myFollowing=result.data.following;
-        });
     </script>
     <script>
         var userName = null;
@@ -28,6 +25,13 @@
         var userPortraitData = null;
         var myFollowing = [];
         var onlineList = null;
+        SOCKET.on('GETUSERINFO',function(result){
+            if(result.data.following!=null){
+                myFollowing=result.data.following;
+            }else{
+                myFollowing=[];
+            }
+        });
     </script>
 </head>
 <body>

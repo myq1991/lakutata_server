@@ -344,9 +344,6 @@
             var room_id = data.room_id;
             parent.currentRoomId = room_id;
             window.location.href = 'chatting?' + room_id;
-            if(parent.document.getElementById("chatting_li").style.display==="none"){
-                parent.document.getElementById("chatting_li").style.display="block";
-            }
         } else {
             alert('Fail to join this room');
         }

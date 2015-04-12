@@ -5,6 +5,67 @@
     <title>Public Home Page</title>
 </head>
 <body>
-public
+<div>
+    <img src="IMG/logo.png" id="big_logo">
+    <div id="big_search_area">
+        <input type="text" id="big_search_box" placeholder="Search your questions...">
+        <button id="big_search_button">SEARCH</button>
+    </div>
+</div>
+<style>
+    #big_logo{
+        height: 300px;
+        display: block;
+        margin: 20px auto;
+    }
+
+    #big_search_area{
+        text-align: center;
+    }
+
+    input{
+        display: inline-block;
+        height: 50px;
+        font-size: 30px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    #big_search_box{
+        width: 500px;
+        box-shadow: 0 0 1px 1px #999999;
+        border: none;
+        vertical-align: middle;
+        font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
+    }
+
+    #big_search_button{
+        vertical-align: middle;
+        height: 56px;
+        width: 100px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        font-size: 20px;
+        color: #FFFFFF;
+        background-color: #56A7E0;
+        font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
+    }
+</style>
 </body>
 </html>
+<script>
+//header_search_box
+    document.getElementById("big_search_box").onkeyup=function(e){
+        if(e.keyCode!=13){
+            var txt=document.getElementById("big_search_box").value;
+            parent.document.getElementById("header_search_box").value=txt;
+        }else{
+            parent.search();
+        }
+    }
+
+    document.getElementById("big_search_button").onclick=function(){
+        parent.search();
+    }
+</script>
