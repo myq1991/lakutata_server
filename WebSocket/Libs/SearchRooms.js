@@ -49,6 +49,7 @@ exports.Run=function(data,callback){
                             }
                         }
                         if(!existing){
+                            //console.log(sub_array[j]);
                             tmp_array.push({id:sub_array[j],marks:j});
                         }
                     }
